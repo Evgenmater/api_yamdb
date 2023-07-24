@@ -1,7 +1,7 @@
 """Serializers for API YAMDB."""
 from rest_framework import serializers
 
-from reviews.models import Review, Comment, Category, Title, Genre
+from reviews.models import Review, Comment, Category, Title, Genre, GenreTitle
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -27,6 +27,15 @@ class GenreSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Genre
+
+        pass
+
+
+class GenreTitleSerializer(serializers.ModelSerializer):
+    """Serializer for GenreTitle."""
+
+    class Meta:
+        model = GenreTitle
 
         pass
 

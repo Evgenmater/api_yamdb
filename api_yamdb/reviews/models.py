@@ -22,6 +22,12 @@ class Title(models.Model):
     pass
 
 
+class GenreTitle(models.Model):
+    """Class GenreTitle."""
+
+    pass
+
+
 class Review(models.Model):
     """Class Reviews."""
     pass
