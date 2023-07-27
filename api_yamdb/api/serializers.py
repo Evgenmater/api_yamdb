@@ -6,11 +6,29 @@ from reviews.models import Review, Comment, Category, Title, Genre, GenreTitle
 
 class ReviewSerializer(serializers.ModelSerializer):
     """Serializer for Review."""
+    author = serializers.SlugRelatedField(
+        slug_field='username', read_only=True)
+    title = serializers.SlugRelatedField(
+        slug_field='name', read_only=True)
+
+    def validate(self, data):
+        title = self.context.get('title')
+        request = self.context.get('request')
+        if (request.method == 'POST'
+           and Review.objects.filter(author=request.user, title=title
+                                     ).exists()):
+            raise serializers.ValidationError(
+                'Вы уже написали отзыв к этому произведению.')
+        return data
+
+    def validate_score(self, value):
+        if not 1 <= value <= 10:
+            raise serializers.ValidationError(
+                'Оценка производится по десятибалльной шкале.')
 
     class Meta:
         model = Review
-
-        pass
+        fields = ('id', 'title', 'text', 'author', 'score', 'pub_date')
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -42,11 +60,14 @@ class GenreTitleSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     """Serializer for Comment."""
+    author = serializers.SlugRelatedField(
+        slug_field='username', read_only=True)
+    review = serializers.SlugRelatedField(
+        slug_field='text', read_only=True)
 
     class Meta:
         model = Comment
-
-        pass
+        fields = ('id', 'review', 'text', 'author', 'pub_date')
 
 
 class TitleSerializer(serializers.ModelSerializer):
