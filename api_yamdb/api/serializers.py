@@ -1,7 +1,7 @@
 """Serializers for API YAMDB."""
 from rest_framework import serializers
 
-from reviews.models import Review, Comment, Category, Title, Genre, GenreTitle
+from reviews.models import Review, Comment, Category, Title, Genre
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -40,8 +40,24 @@ class CommentSerializer(serializers.ModelSerializer):
         pass
 
 
+class ReadOnlyTitleSerializer(serializers.ModelSerializer):
+    """Serializer to read Titles for users."""
+    rating = serializers.IntegerField(
+        source='reviews__score__avg', read_only=True
+    )
+    genre = GenreSerializer(many=True)
+    category = CategorySerializer()
+
+    class Meta:
+        """Meta ReadOnlyTitleSerializer."""
+        model = Title
+        fields = (
+            'id', 'name', 'year', 'rating', 'description', 'genre', 'category'
+        )
+
+
 class TitleSerializer(serializers.ModelSerializer):
-    """Serializer for Title."""
+    """Serializer to add Titles."""
     genre = serializers.SlugRelatedField(
         slug_field='slug', many=True, queryset=Genre.objects.all()
     )
@@ -50,19 +66,6 @@ class TitleSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
+        """Meta TitleSerializer."""
         model = Title
         fields = '__all__'
-
-
-class ReadOnlyTitleSerializer(serializers.ModelSerializer):
-    rating = serializers.IntegerField(
-        source='reviews__score__avg', read_only=True
-    )
-    genre = GenreSerializer(many=True)
-    category = CategorySerializer()
-
-    class Meta:
-        model = Title
-        fields = (
-            'id', 'name', 'year', 'rating', 'description', 'genre', 'category'
-        )

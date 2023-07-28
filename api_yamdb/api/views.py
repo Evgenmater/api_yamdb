@@ -11,20 +11,20 @@ from .serializers import (CategorySerializer,
                           ReadOnlyTitleSerializer)
 
 
-class CategoryViewSet(ListCreateDestroyViewSet):
-    """ViewSet for Category."""
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+class GenreViewSet(ListCreateDestroyViewSet):
+    """ViewSet for Genre."""
+    queryset = Genre.objects.all()
+    serializer_class = GenreSerializer
     permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ("name",)
     lookup_field = "slug"
 
 
-class GenreViewSet(ListCreateDestroyViewSet):
-    """ViewSet for Genre."""
-    queryset = Genre.objects.all()
-    serializer_class = GenreSerializer
+class CategoryViewSet(ListCreateDestroyViewSet):
+    """ViewSet for Category."""
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
     permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ("name",)
