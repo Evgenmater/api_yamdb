@@ -2,11 +2,6 @@
 from django.db import models
 
 
-class User():
-    """Class User."""
-    pass
-
-
 class Category(models.Model):
     """Class Categories."""
     pass
