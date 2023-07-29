@@ -42,11 +42,11 @@ class ReviewSerializer(serializers.ModelSerializer):
         slug_field='name', read_only=True)
 
     def validate(self, data):
-        title = self.context.get('title')
+        title_id = self.context.get('view').kwargs.get('title_id')
         request = self.context.get('request')
         if (request.method == 'POST' and Review.objects.filter(
             author=request.user,
-            title=title,
+            title=title_id,
         ).exists()):
             raise serializers.ValidationError(
                 'Вы уже написали отзыв к этому произведению.')
@@ -56,6 +56,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         if not 1 <= value <= 10:
             raise serializers.ValidationError(
                 'Оценка производится по десятибалльной шкале.')
+        return value
 
     class Meta:
         model = Review
