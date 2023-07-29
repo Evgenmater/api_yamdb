@@ -42,16 +42,14 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
 
-        pass
-
 
 class CategorySerializer(serializers.ModelSerializer):
     """Serializer for Category."""
 
     class Meta:
         model = Category
-
-        pass
+        exclude = ('id',)
+        lookup_field = 'slug'
 
 
 class GenreSerializer(serializers.ModelSerializer):
@@ -59,17 +57,8 @@ class GenreSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Genre
-
-        pass
-
-
-class GenreTitleSerializer(serializers.ModelSerializer):
-    """Serializer for GenreTitle."""
-
-    class Meta:
-        model = GenreTitle
-
-        pass
+        exclude = ('id',)
+        lookup_field = 'slug'
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -78,13 +67,33 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
 
-        pass
+
+class ReadOnlyTitleSerializer(serializers.ModelSerializer):
+    """Serializer to read Titles for users."""
+    rating = serializers.IntegerField(
+        source='reviews__score__avg', read_only=True
+    )
+    genre = GenreSerializer(many=True)
+    category = CategorySerializer()
+
+    class Meta:
+        """Meta ReadOnlyTitleSerializer."""
+        model = Title
+        fields = (
+            'id', 'name', 'year', 'rating', 'description', 'genre', 'category'
+        )
 
 
 class TitleSerializer(serializers.ModelSerializer):
-    """Serializer for Title."""
+    """Serializer to add Titles."""
+    genre = serializers.SlugRelatedField(
+        slug_field='slug', many=True, queryset=Genre.objects.all()
+    )
+    category = serializers.SlugRelatedField(
+        slug_field='slug', queryset=Category.objects.all()
+    )
 
     class Meta:
+        """Meta TitleSerializer."""
         model = Title
-
-        pass
+        fields = '__all__'

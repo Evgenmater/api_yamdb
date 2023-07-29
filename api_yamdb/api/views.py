@@ -1,3 +1,4 @@
+from django.db.models import Avg
 from django.core.mail import send_mail
 from django.contrib.auth.tokens import default_token_generator
 from django.shortcuts import get_object_or_404
@@ -10,8 +11,12 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
-from api.permissions import IsAdmin
-from api.serializers import SignUpSerializer, TokenSerializer, UserSerializer
+from api.permissions import IsAdmin, IsAdminOrReadOnly
+from api.serializers import (SignUpSerializer, TokenSerializer, UserSerializer,
+                             CategorySerializer, GenreSerializer,
+                             TitleSerializer, ReadOnlyTitleSerializer)
+from reviews.models import Category, Genre, Title
+from .mixins import ListCreateDestroyViewSet
 from users.models import User
 
 
@@ -102,3 +107,38 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         serializer = UserSerializer(user)
         return Response(serializer.data)
+
+
+class GenreViewSet(ListCreateDestroyViewSet):
+    """ViewSet for Genre."""
+    queryset = Genre.objects.all()
+    serializer_class = GenreSerializer
+    permission_classes = (IsAdminOrReadOnly,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ("name",)
+    lookup_field = "slug"
+
+
+class CategoryViewSet(ListCreateDestroyViewSet):
+    """ViewSet for Category."""
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = (IsAdminOrReadOnly,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ("name",)
+    lookup_field = "slug"
+
+
+class TitleViewSet(viewsets.ModelViewSet):
+    """ViewSet for Title."""
+    queryset = Title.objects.all().annotate(
+        Avg("reviews__score")
+    ).order_by("name")
+    serializer_class = TitleSerializer
+    permission_classes = (IsAdminOrReadOnly,)
+
+    def get_serializer_class(self):
+        if self.action in ("retrieve", "list"):
+            return ReadOnlyTitleSerializer
+        return TitleSerializer
+
