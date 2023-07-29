@@ -10,6 +10,11 @@ from reviews.models import Review, Title
 
 
 class CommentViewSet(viewsets.ModelViewSet):
+    """Получить список комментариев.
+    Добавить новый комментарий к отзыву.
+    Получить комментарий по id.
+    Обновить комментарий по id.
+    Удалить комментарий."""
 
     serializer_class = CommentSerializer
     permission_classes = (IsAuthorModeratorAdminOrReadOnly,)
@@ -29,6 +34,12 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
+    """
+    Получить список отзывов.
+    Добавить новый отзыв.
+    Получить отзыв по id.
+    Обновить отзыв по id.
+    """
 
     serializer_class = ReviewSerializer
     permission_classes = (IsAuthorModeratorAdminOrReadOnly,)

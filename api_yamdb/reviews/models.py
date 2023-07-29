@@ -30,7 +30,7 @@ class GenreTitle(models.Model):
 
 
 class Review(models.Model):
-    """Class Reviews."""
+    """Модель для отзывов с рейтингом."""
     title = models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
@@ -59,7 +59,7 @@ class Review(models.Model):
 
 
 class Comment(models.Model):
-    """Class Comments."""
+    """Модель для комментариев."""
     review = models.ForeignKey(
         Review,
         on_delete=models.CASCADE,

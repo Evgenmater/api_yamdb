@@ -3,6 +3,8 @@ from rest_framework import permissions
 
 
 class IsAuthorModeratorAdminOrReadOnly(permissions.BasePermission):
+    """Разрешение для автора/модератора/админа/суперпользователя
+    или только чтение."""
 
     def has_object_permission(self, request, view, obj):
         return (request.method in permissions.SAFE_METHODS
