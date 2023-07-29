@@ -15,7 +15,7 @@ class Category(models.Model):
     )
     slug = models.SlugField(
         verbose_name='идентификатор',
-        max_length=200,
+        max_length=50,
         unique=True
     )
 
@@ -37,7 +37,7 @@ class Genre(models.Model):
     )
     slug = models.SlugField(
         verbose_name='идентификатор',
-        max_length=200,
+        max_length=50,
         unique=True
     )
 

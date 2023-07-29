@@ -140,6 +140,8 @@ class TitleViewSet(viewsets.ModelViewSet):
     ).order_by("name")
     serializer_class = TitleSerializer
     permission_classes = (IsAdminOrReadOnly,)
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ('genre',)
 
     def get_serializer_class(self):
         if self.action in ("retrieve", "list"):
