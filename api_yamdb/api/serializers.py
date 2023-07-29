@@ -1,10 +1,7 @@
-"""Serializers for API YAMDB."""
 from rest_framework import serializers
 
-from .models import (
-    Review, Comment, Category,
-    Title, Genre, GenreTitle, User,
-)
+from reviews.models import Comment, Category, Genre, Review, Title
+from users.models import User
 
 
 class TokenSerializer(serializers.ModelSerializer):
@@ -47,9 +44,10 @@ class ReviewSerializer(serializers.ModelSerializer):
     def validate(self, data):
         title = self.context.get('title')
         request = self.context.get('request')
-        if (request.method == 'POST'
-           and Review.objects.filter(author=request.user, title=title
-                                     ).exists()):
+        if (request.method == 'POST' and Review.objects.filter(
+            author=request.user,
+            title=title,
+        ).exists()):
             raise serializers.ValidationError(
                 'Вы уже написали отзыв к этому произведению.')
         return data
