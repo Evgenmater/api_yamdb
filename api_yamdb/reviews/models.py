@@ -1,7 +1,7 @@
 """Models for YAMDB."""
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-
+from user.models import User
 
 class User():
     """Class User."""
