@@ -1,7 +1,39 @@
-"""Serializers for API YAMDB."""
 from rest_framework import serializers
 
-from reviews.models import Review, Comment, Category, Title, Genre
+from reviews.models import (
+    Review, Comment, Category, Title, Genre, GenreTitle
+)
+from users.models import User
+
+
+class TokenSerializer(serializers.ModelSerializer):
+    """Сериализатор данных для JWT-Token."""
+
+    username = serializers.CharField(max_length=150, required=True)
+    confirmation_code = serializers.CharField(max_length=200, required=True)
+
+    class Meta:
+        model = User
+        fields = ('username', 'confirmation_code',)
+
+
+class UserSerializer(serializers.ModelSerializer):
+    """Сериализация данных о пользователях."""
+
+    class Meta:
+        model = User
+        fields = (
+            'username', 'email', 'first_name',
+            'last_name', 'bio', 'role',
+        )
+
+
+class SignUpSerializer(serializers.ModelSerializer):
+    """Сериализация данных для регистрации пользователя."""
+
+    class Meta:
+        model = User
+        fields = ('username', 'email',)
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -9,8 +41,6 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-
-        pass
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -36,8 +66,6 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-
-        pass
 
 
 class ReadOnlyTitleSerializer(serializers.ModelSerializer):

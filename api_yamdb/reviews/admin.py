@@ -1,4 +1,3 @@
-"""Description admin panel."""
 from django.contrib import admin
 
 from .models import Category, Genre, GenreTitle, Title

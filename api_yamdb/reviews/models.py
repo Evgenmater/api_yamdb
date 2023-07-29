@@ -4,11 +4,6 @@ from django.db import models
 from .validators import validate_year
 
 
-class User():
-    """Class User."""
-    pass
-
-
 class Category(models.Model):
     """Class Categories."""
     name = models.CharField(
