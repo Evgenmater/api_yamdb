@@ -1,58 +1,129 @@
-"""Serializers for API YAMDB."""
 from rest_framework import serializers
 
-from reviews.models import Review, Comment, Category, Title, Genre, GenreTitle
+from reviews.models import Comment, Category, Genre, Review, Title
+from users.models import User
+
+
+class TokenSerializer(serializers.ModelSerializer):
+    """Сериализатор данных для JWT-Token."""
+
+    username = serializers.CharField(max_length=150, required=True)
+    confirmation_code = serializers.CharField(max_length=200, required=True)
+
+    class Meta:
+        model = User
+        fields = ('username', 'confirmation_code',)
+
+
+class UserSerializer(serializers.ModelSerializer):
+    """Сериализатор данных о пользователях."""
+
+    class Meta:
+        model = User
+        fields = (
+            'username', 'email', 'first_name',
+            'last_name', 'bio', 'role',
+        )
+
+
+class SignUpSerializer(serializers.ModelSerializer):
+    """Сериализатор данных для регистрации пользователя."""
+
+    class Meta:
+        model = User
+        fields = ('username', 'email',)
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    """Serializer for Review."""
+    """Сериализатор для отзывов."""
+
+    author = serializers.SlugRelatedField(
+        slug_field='username', read_only=True)
+    title = serializers.SlugRelatedField(
+        slug_field='name', read_only=True)
+
+    def validate(self, data):
+        title_id = self.context.get('view').kwargs.get('title_id')
+        request = self.context.get('request')
+        if (request.method == 'POST' and Review.objects.filter(
+            author=request.user,
+            title=title_id,
+        ).exists()):
+            raise serializers.ValidationError(
+                'Вы уже написали отзыв к этому произведению.')
+        return data
+
+    def validate_score(self, value):
+        if not 1 <= value <= 10:
+            raise serializers.ValidationError(
+                'Оценка производится по десятибалльной шкале.')
+        return value
 
     class Meta:
         model = Review
-
-        pass
+        fields = ('id', 'title', 'text', 'author', 'score', 'pub_date')
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    """Serializer for Category."""
+    """Сериализатор для категорий."""
 
     class Meta:
         model = Category
-
-        pass
+        exclude = ('id',)
+        lookup_field = 'slug'
 
 
 class GenreSerializer(serializers.ModelSerializer):
-    """Serializer for Genre."""
+    """Сериализатор для жанров."""
 
     class Meta:
         model = Genre
-
-        pass
-
-
-class GenreTitleSerializer(serializers.ModelSerializer):
-    """Serializer for GenreTitle."""
-
-    class Meta:
-        model = GenreTitle
-
-        pass
+        exclude = ('id',)
+        lookup_field = 'slug'
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    """Serializer for Comment."""
+    """Сериализатор для комментариев."""
+
+    author = serializers.SlugRelatedField(
+        slug_field='username', read_only=True)
+    review = serializers.SlugRelatedField(
+        slug_field='text', read_only=True)
 
     class Meta:
         model = Comment
+        fields = ('id', 'review', 'text', 'author', 'pub_date')
 
-        pass
 
+class ReadOnlyTitleSerializer(serializers.ModelSerializer):
+    """Сериализатор для чтения произведений пользователями."""
 
-class TitleSerializer(serializers.ModelSerializer):
-    """Serializer for Title."""
+    rating = serializers.IntegerField(
+        source='reviews__score__avg', read_only=True
+    )
+    genre = GenreSerializer(many=True)
+    category = CategorySerializer()
 
     class Meta:
         model = Title
+        fields = (
+            'id', 'name', 'year', 'rating', 'description', 'genre', 'category'
+        )
 
-        pass
+
+class TitleSerializer(serializers.ModelSerializer):
+    """Сериализатор для произведений."""
+
+    genre = serializers.SlugRelatedField(
+        slug_field='slug', many=True, queryset=Genre.objects.all()
+    )
+    category = serializers.SlugRelatedField(
+        slug_field='slug', queryset=Category.objects.all()
+    )
+
+    class Meta:
+        model = Title
+        fields = (
+            'id', 'name', 'year', 'rating', 'description', 'genre', 'category'
+        )
+        read_only_fields = ('id',)

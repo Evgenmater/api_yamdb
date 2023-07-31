@@ -2,6 +2,7 @@
 from django.apps import AppConfig
 
 
-class ApiConfig(AppConfig):
-    """App config class ApiConfig."""
+class ReviewsConfig(AppConfig):
+    """App config class ReviewsConfig."""
+
     name = 'reviews'
