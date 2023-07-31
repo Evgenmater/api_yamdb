@@ -1,13 +1,12 @@
-"""Models for YAMDB."""
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-from users.models import User
 from reviews.validators import validate_year
+from users.models import User
 
 
 class Category(models.Model):
-    """Class Categories."""
+    """Модель для категорий."""
 
     name = models.CharField(
         verbose_name='название',
@@ -15,7 +14,7 @@ class Category(models.Model):
     )
     slug = models.SlugField(
         verbose_name='идентификатор',
-        max_length=200,
+        max_length=50,
         unique=True
     )
 
@@ -29,7 +28,7 @@ class Category(models.Model):
 
 
 class Genre(models.Model):
-    """Class Genres."""
+    """Модель для жанров."""
 
     name = models.CharField(
         verbose_name='название',
@@ -37,7 +36,7 @@ class Genre(models.Model):
     )
     slug = models.SlugField(
         verbose_name='идентификатор',
-        max_length=200,
+        max_length=50,
         unique=True
     )
 
@@ -51,7 +50,7 @@ class Genre(models.Model):
 
 
 class Title(models.Model):
-    """Class Titles."""
+    """Модель для произведений."""
 
     name = models.CharField(
         verbose_name='название',
@@ -94,7 +93,7 @@ class Title(models.Model):
 
 
 class GenreTitle(models.Model):
-    """Class GenreTitle."""
+    """Модель для произведений и жанров."""
 
     title = models.ForeignKey(
         Title,

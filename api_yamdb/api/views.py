@@ -11,6 +11,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
+from api.filtres import TitleFilter
 from api.permissions import (
     IsAdmin, IsAdminOrReadOnly, IsAuthorModeratorAdminOrReadOnly
 )
@@ -114,17 +115,27 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class GenreViewSet(ListCreateDestroyViewSet):
-    """ViewSet for Genre."""
+    """
+    Получение списка всех жанров.
+    Добавление нового жанра.
+    Удаление жанра.
+    """
+
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (filters.SearchFilter,)
-    search_fields = ("name",)
-    lookup_field = "slug"
+    search_fields = ('name',)
+    lookup_field = 'slug'
 
 
 class CategoryViewSet(ListCreateDestroyViewSet):
-    """ViewSet for Category."""
+    """
+    Получение списка всех категорий.
+    Добавление новой категории.
+    Удаление категории.
+    """
+
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = (IsAdminOrReadOnly,)
@@ -134,12 +145,22 @@ class CategoryViewSet(ListCreateDestroyViewSet):
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    """ViewSet for Title."""
+    """
+    Произведения, к которым пишут отзывы.
+    Получение списка всех произведений.
+    Получение информации о произведении.
+    Частичное обновление информации о произведении.
+    Добавление нового произведения.
+    Удаление произведения.
+    """
+
     queryset = Title.objects.all().annotate(
         Avg("reviews__score")
     ).order_by("name")
     serializer_class = TitleSerializer
     permission_classes = (IsAdminOrReadOnly,)
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = TitleFilter
 
     def get_serializer_class(self):
         if self.action in ("retrieve", "list"):
@@ -148,11 +169,13 @@ class TitleViewSet(viewsets.ModelViewSet):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    """Получить список комментариев.
+    """
+    Получить список комментариев.
     Добавить новый комментарий к отзыву.
     Получить комментарий по id.
     Обновить комментарий по id.
-    Удалить комментарий."""
+    Удалить комментарий.
+    """
 
     serializer_class = CommentSerializer
     permission_classes = (IsAuthorModeratorAdminOrReadOnly,)

@@ -10,7 +10,7 @@ class IsAdmin(permissions.BasePermission):
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
-    """Read for all user, other only Admin of super."""
+    """"Разрешение для админа/суперпользователя или только чтение."""
 
     def has_permission(self, request, view):
         return (request.method in permissions.SAFE_METHODS
