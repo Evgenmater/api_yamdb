@@ -1,5 +1,4 @@
 import csv
-import os
 
 from django.core.management.base import BaseCommand
 
@@ -16,13 +15,6 @@ class Command(BaseCommand):
     help = 'Импортирует данные в БД из папки static/data'
 
     def handle(self, *args, **kwargs):
-        Title.objects.all().delete()
-        User.objects.all().delete()
-        Category.objects.all().delete()
-        Comment.objects.all().delete()
-        GenreTitle.objects.all().delete()
-        Genre.objects.all().delete()
-        Review.objects.all().delete()
 
         with open(
             './api_yamdb/static/data/category.csv',
@@ -31,15 +23,13 @@ class Command(BaseCommand):
             encoding='utf8'
         ) as f:
             reader = csv.reader(f)
-            headers = next(reader)
-            # print('Headers: ', headers)
+            next(reader)
             for row in reader:
-                create = Category.objects.get_or_create(
+                Category.objects.get_or_create(
                     pk=row[0],
                     name=row[1],
                     slug=row[2]
                 )
-                # print(create)
 
         with open(
             './api_yamdb/static/data/genre.csv',
@@ -48,15 +38,13 @@ class Command(BaseCommand):
             encoding='utf8'
         ) as f:
             reader = csv.reader(f)
-            headers = next(reader)
-            # print('Headers: ', headers)
+            next(reader)
             for row in reader:
-                create = Genre.objects.get_or_create(
+                Genre.objects.get_or_create(
                     pk=row[0],
                     name=row[1],
                     slug=row[2]
                 )
-                # print(create)
 
         with open(
             './api_yamdb/static/data/titles.csv',
@@ -65,16 +53,14 @@ class Command(BaseCommand):
             encoding='utf8'
         ) as f:
             reader = csv.reader(f)
-            headers = next(reader)
-            # print('Headers: ', headers)
+            next(reader)
             for row in reader:
-                create = Title.objects.get_or_create(
+                Title.objects.get_or_create(
                     pk=row[0],
                     name=row[1],
                     year=row[2],
                     category=Category.objects.get(pk=row[3])
                 )
-                # print(create)
 
         with open(
             './api_yamdb/static/data/genre_title.csv',
@@ -83,15 +69,13 @@ class Command(BaseCommand):
             encoding='utf8'
         ) as f:
             reader = csv.reader(f)
-            headers = next(reader)
-            # print('Headers: ', headers)
+            next(reader)
             for row in reader:
-                create = GenreTitle.objects.get_or_create(
+                GenreTitle.objects.get_or_create(
                     pk=row[0],
                     title=Title.objects.get(pk=row[1]),
                     genre=Genre.objects.get(pk=row[2])
                 )
-                # print(create)
 
         with open(
             './api_yamdb/static/data/users.csv',
@@ -100,10 +84,9 @@ class Command(BaseCommand):
             encoding='utf8'
         ) as f:
             reader = csv.reader(f)
-            headers = next(reader)
-            # print('Headers: ', headers)
+            next(reader)
             for row in reader:
-                create = User.objects.get_or_create(
+                User.objects.get_or_create(
                     pk=row[0],
                     role=row[3],
                     email=row[2],
@@ -112,7 +95,6 @@ class Command(BaseCommand):
                     first_name=row[5],
                     last_name=row[5]
                 )
-                # print(create)
 
         with open(
             './api_yamdb/static/data/review.csv',
@@ -121,10 +103,9 @@ class Command(BaseCommand):
             encoding='utf8'
         ) as f:
             reader = csv.reader(f)
-            headers = next(reader)
-            # print('Headers: ', headers)
+            next(reader)
             for row in reader:
-                create = Review.objects.get_or_create(
+                Review.objects.get_or_create(
                     pk=row[0],
                     title=Title.objects.get(pk=row[1]),
                     text=row[2],
@@ -132,7 +113,6 @@ class Command(BaseCommand):
                     score=row[4],
                     pub_date=row[5]
                 )
-                # print(create)
 
         with open(
             './api_yamdb/static/data/comments.csv',
@@ -141,14 +121,12 @@ class Command(BaseCommand):
             encoding='utf8'
         ) as f:
             reader = csv.reader(f)
-            headers = next(reader)
-            # print('Headers: ', headers)
+            next(reader)
             for row in reader:
-                create = Comment.objects.get_or_create(
+                Comment.objects.get_or_create(
                     pk=row[0],
                     review=Review.objects.get(pk=row[1]),
                     text=row[2],
                     author=User.objects.get(pk=row[3]),
                     pub_date=row[4]
                 )
-                # print(create)
