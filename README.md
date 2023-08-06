@@ -57,13 +57,13 @@ pip install -r requirements.txt
 * Если у вас Linux/macOS 
 
     ``` 
-    python3 api_yamdb/manage.py migrate --run-syncdb
+    python3 api_yamdb/manage.py migrate
     ```
 
 * Если у вас windows
 
     ``` 
-    python api_yamdb/manage.py migrate --run-syncdb
+    python api_yamdb/manage.py migrate
     ```
 
 Импортируем данные из csv файлов:
