@@ -24,6 +24,7 @@ class User(AbstractUser):
 
     class Meta:
         ordering = ('role',)
+        verbose_name = 'Пользователи'
 
     @property
     def is_moderator(self):
