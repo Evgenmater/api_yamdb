@@ -39,11 +39,11 @@ Cоздать и активировать виртуальное окружен�
     ``` 
 
     ``` 
-    source env/scripts/activate 
+    source venv/Scripts/activate 
     ``` 
 
     ``` 
-    python pip install --upgrade pip 
+    python -m pip install --upgrade pip 
     ``` 
 
 Установить зависимости из файла requirements.txt: 
