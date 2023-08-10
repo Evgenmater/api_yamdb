@@ -84,6 +84,7 @@ class GenreSerializer(serializers.ModelSerializer):
 
 class CategorySlug(serializers.SlugRelatedField):
     """Сериализатор для поля категории."""
+
     def to_representation(self, value):
         serializer = CategorySerializer(value)
         return serializer.data
@@ -91,6 +92,7 @@ class CategorySlug(serializers.SlugRelatedField):
 
 class GenreSlug(serializers.SlugRelatedField):
     """Сериализатор для поля жанров."""
+
     def to_representation(self, value):
         serializer = GenreSerializer(value)
         return serializer.data
