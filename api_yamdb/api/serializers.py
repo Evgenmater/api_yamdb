@@ -66,20 +66,20 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class CategorySerializer(serializers.ModelSerializer):
     """Сериализатор для категорий."""
-    lookup_field = 'slug'
 
     class Meta:
         model = Category
-        fields = ('name', 'slug')
+        exclude = ('id',)
+        lookup_field = 'slug'
 
 
 class GenreSerializer(serializers.ModelSerializer):
     """Сериализатор для жанров."""
-    lookup_field = 'slug'
 
     class Meta:
         model = Genre
-        fields = ('name', 'slug')
+        exclude = ('id',)
+        lookup_field = 'slug'
 
 
 class CategorySlug(serializers.SlugRelatedField):
